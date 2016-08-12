@@ -5,6 +5,7 @@ import csv
 import requests
 
 from config import api_token, var_to_ord
+import items
 
 
 rooturl = 'https://connect.squareup.com/v1'
