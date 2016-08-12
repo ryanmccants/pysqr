@@ -1,3 +1,4 @@
+import os
 import json
 import csv
 
@@ -10,6 +11,22 @@ rooturl = 'https://connect.squareup.com/v1'
 headers = {'Authorization': 'Bearer ' + api_token,
            'Accept':        'application/json',
            'Content-Type':  'application/json'}
+
+
+def get_locations():
+    if os.path.isfile('locations.json'):
+        with open('locations.json') as f:
+            return json.load(f)
+    else:
+        r = requests.get(rooturl+'/me/locations', headers=headers)
+        locs = r.json()
+        loc_dict = {x['name']: x for x in locs}
+        with open('locations.json', 'w') as f:
+            json.dump(loc_dict, f)
+        return loc_dict
+
+
+locations = get_locations()
 
 
 def size_ordinal(variation, o_dict):
@@ -30,9 +47,27 @@ def makeitems(csvfile, o_dict):
     name as the key and creates a json structure for the item and its
     variations. Categories will have to be created before items can be
     assigned as the categories_id is needed.
+
+    item = {
+        'name': string,
+        'variations': [{
+            'name': string defaults to Regual if none,
+            'ordinal': '1' default,
+            'currency_code': 'USD',
+            'pricing_type': 'VARIABLE_PRICING' or 'FIXED_PRICING'
+            'price_money': {
+                'currency_code': 'USD',
+                'amount': cents
+            }
+        },
+        {variaton 2 ...}
+        ]
+        'category': category name
+    
+    }
     '''
     with open(csvfile) as f:
-        fromcvs = list(csv.DictReader(f))
+        fromcsv = list(csv.DictReader(f))
 
     items = {}
     for item in fromcsv:
@@ -40,11 +75,11 @@ def makeitems(csvfile, o_dict):
             items[item['Name']] = {
                     'name': item['Name'],
                     'variations': [],
-                    'category':{'name',item['Category']}
+                    'category': {'name': item['Category']}
             }
         variation = {
             'name': item['Variation'] if item['Variation'] else 'Regular',
-            'ordinal': size_ordinal(item['Variation']) if item['Variation'] else '1'
+            'ordinal': size_ordinal(item['Variation'])
         }
         if item['Price']:
             variation['price_money'] = {
@@ -57,16 +92,21 @@ def makeitems(csvfile, o_dict):
     return items
 
 
+def map_to_loc(f, locs):
+    '''Applies function f to the store or list of stores.
+    Returns iterable.
+    '''
+    if locs == 'all':
+        locs = locations.keys()
+    locs = list(locs)
+    return map(f, locs)
+
+
 def create_category(name, store_id):
     url = rooturl + store_id + '/categories'
     r = requests.post(url, headers=headers, json={'name': name})
     r.raise_for_status()
     return r.json()
-
-
-def create_item(item, store_id):
-    url = rooturl + '/v1/' + store_id + 'item'
-    r = requests.post(url, headers=headers, json=item)
 
 
 def batch(reqs):
@@ -86,3 +126,21 @@ def batch(reqs):
         else:
             resp += r.json()
     return resp
+
+
+def update_items(csvfile):
+    '''Updates item information
+
+    Retrieves all items and categories from all locations,
+    compares with the csvfile, creates items/variations/categories if need.
+    '''
+    # Setup: load file
+    new_items = makeitems(csvfile, var_to_ord)
+    # Get current items for each store
+    
+    '''
+    Iterate through file items
+        Check if item/vaiation is in stores, add if needed.
+        Update item/variation price.
+        Check/Update item category and create if needed.
+    '''
