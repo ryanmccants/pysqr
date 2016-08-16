@@ -5,8 +5,12 @@ import csv
 import requests
 
 from config import access_token, var_to_ord
-import items
-import modifiers
+from . import items
+from . import variations
+from . import modifiers
+from . import categories
+from . import fees
+from . import pages
 
 
 rooturl = 'https://connect.squareup.com/v1'
