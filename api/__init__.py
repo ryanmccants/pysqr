@@ -118,6 +118,8 @@ def batch(reqs):
     '''
     Takes a list of requests in json
     '''
+    if type(reqs) is not list:
+        reqs = [reqs]
     batch_url = rooturl + '/batch'
     resp = []
     for sublist in [reqs[i:i+30] for i in range(0, len(reqs), 30)]:

@@ -94,7 +94,7 @@ def delete_fee(fee, loc_id):
     req_id = '{} fee {} delete'.format(loc_id, fee['id'])
     req = {
         'method': 'DELETE',
-        'relative_path': ('/v1/{}/modifier-lists/{}'
+        'relative_path': ('/v1/{}/fees/{}'
                           .format(loc_id, fee['id'])),
         'access_token': access_token,
         'request_id': req_id
@@ -108,7 +108,7 @@ def apply_fee(fee, item, loc_id):
               .format(loc_id, item['id'], fee['id']))
     req = {
         'method': 'PUT',
-        'relative_path': ('/v1/{}/items/{}/modifier-lists/{}'
+        'relative_path': ('/v1/{}/items/{}/fees/{}'
                           .format(loc_id, item['id'], fee['id'])),
         'access_token': access_token,
         'request_id': req_id
@@ -122,7 +122,7 @@ def remove_fee(fee, item, loc_id):
               .format(loc_id, item['id'], fee['id']))
     req = {
         'method': 'DELETE',
-        'relative_path': ('/v1/{}/items/{}/modifier-lists/{}'
+        'relative_path': ('/v1/{}/items/{}/fees/{}'
                           .format(loc_id, item['id'], fee['id'])),
         'access_token': access_token,
         'request_id': req_id
