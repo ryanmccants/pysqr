@@ -1,6 +1,6 @@
 from urllib import parse
 
-from config import access_token
+from ..config import access_token
 
 '''
 page = {

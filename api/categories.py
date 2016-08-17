@@ -1,4 +1,4 @@
-from config import access_token
+from ..config import access_token
 
 
 '''

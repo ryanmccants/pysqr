@@ -1,4 +1,4 @@
-from config import access_token
+from ..config import access_token
 '''
 {
   "id": "442d1344-6d2b-4238-83d0-0284dfd335d8",

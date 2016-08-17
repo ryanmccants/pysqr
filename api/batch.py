@@ -15,17 +15,4 @@ def batch(reqs):
         else:
             resp += r.json()
     return resp
-
-def get_cats():
-    '''Get a list of Categories'''
-    
-    req = {
-            'method': 'POST',
-            'relative_path': '/v1/' + loc_id + 'categories',
-            'access_token': access_token,
-            'body': body,
-            'request_id': req_id
-            }
-
-class BatchRequest(object):
-    
+   

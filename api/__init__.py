@@ -4,7 +4,7 @@ import csv
 
 import requests
 
-from config import access_token, var_to_ord
+from ..config import access_token, var_to_ord
 from . import items
 from . import variations
 from . import modifiers
@@ -35,18 +35,18 @@ def get_locations():
 locations = get_locations()
 
 
-def size_ordinal(variation, o_dict):
+def size_ordinal(variation):
     '''
     Gets a variations ordinal from a diction. If it isn't in the dictionary,
     a '1' is returned.
     '''
-    if variation in o_dict:
-        return o_dict[variation]
+    if variation in var_to_ord:
+        return var_to_ord[variation]
     else:
         return '1'
 
 
-def makeitems(csvfile, o_dict):
+def makeitems(csvfile):
     '''
     Takes a csv with Name, Variation, Price, and Category columns and
     a dictionary for ordinal lookup. Creates a dictionary with the item
